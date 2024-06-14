@@ -15,6 +15,7 @@
     <description>czConfig-demo</description>
     <properties>
         <java.version>17</java.version>
+        <czConfig.version>0.0.1-SNAPSHOT</czConfig.version>
     </properties>
     <dependencies>
         <dependency>
@@ -31,6 +32,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cz</groupId>
+            <artifactId>czConfig-client</artifactId>
+            <version>${czConfig.version}</version>
         </dependency>
     </dependencies>
 
