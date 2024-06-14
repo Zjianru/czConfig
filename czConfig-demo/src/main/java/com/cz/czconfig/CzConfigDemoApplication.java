@@ -7,6 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
+
+import java.util.Arrays;
 
 @SpringBootApplication
 @EnableConfigurationProperties(LocalConfig.class)
@@ -16,6 +19,8 @@ public class CzConfigDemoApplication {
     private String configValue;
     @Autowired
     private LocalConfig localConfig;
+    @Autowired
+    Environment environment;
 
     public static void main(String[] args) {
         SpringApplication.run(CzConfigDemoApplication.class, args);
@@ -24,6 +29,8 @@ public class CzConfigDemoApplication {
     @Bean
     ApplicationRunner applicationRunner() {
         return args -> {
+            System.out.println(environment.getProperty("cz.config.key1"));
+            System.out.println(Arrays.toString(environment.getActiveProfiles()));
             System.out.println(configValue);
             System.out.println(localConfig.getKey1());
         };

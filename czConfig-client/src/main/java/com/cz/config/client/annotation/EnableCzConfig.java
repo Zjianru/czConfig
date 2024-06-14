@@ -1,4 +1,7 @@
-package com.cz.czconfigclient.annotation;
+package com.cz.config.client.annotation;
+
+import com.cz.config.client.registry.BeanRegistrar;
+import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
@@ -11,5 +14,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Import({BeanRegistrar.class})
 public @interface EnableCzConfig {
 }
