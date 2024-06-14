@@ -26,5 +26,12 @@ springboot 里存在两种配置的绑定方式
 
 * czConfig-server 完成v1实现三个接口。
 
-配置中心替换配置原理
+## 配置中心替换配置原理
 ![img.png](noteImg/img.png)
+
+### 配置替换逻辑
+#### 启动时替换配置
+入口: `EnableCzConfig`
+注解中 import 了启动逻辑 `BeanRegistrar` , 实现 `ImportBeanDefinitionRegistrar` 接口,注入 `PropertySourcesProcess` 处理器进行逻辑处理
+
+`PropertySourcesProcess` 负责获取配置中心配置并将配置打包为 `CompositePropertySource` 注入进 `ConfigurableEnvironment` 中

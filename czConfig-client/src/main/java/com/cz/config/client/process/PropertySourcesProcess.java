@@ -46,9 +46,6 @@ public class PropertySourcesProcess implements BeanFactoryPostProcessor , Priori
         CompositePropertySource composite = new CompositePropertySource(CZ_CONFIGS_PREFIX);
         composite.addPropertySource(czConfigPropertySource);
         env.getPropertySources().addFirst(composite);
-
-
-
     }
 
     @Override
