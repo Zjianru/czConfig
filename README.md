@@ -26,3 +26,5 @@ springboot 里存在两种配置的绑定方式
 
 * czConfig-server 完成v1实现三个接口。
 
+配置中心替换配置原理
+![img.png](noteImg/img.png)

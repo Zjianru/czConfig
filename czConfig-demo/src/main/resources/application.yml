@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: cz-config-demo
+
+cz:
+  config:
+    key1: "init by config yml file , value is key1"
+    key2: "init by config yml file , value is key2"
+    key3: "init by config yml file , value is key3"
