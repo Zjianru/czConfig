@@ -17,8 +17,8 @@ import java.util.Arrays;
 @EnableCzConfig
 public class CzConfigDemoApplication {
 
-    @Value("${cz.config.key1}")
-    private String configValue;
+    @Value("${cz.config.app}")
+    private String configValueApp;
     @Autowired
     private LocalConfig localConfig;
     @Autowired
@@ -31,10 +31,11 @@ public class CzConfigDemoApplication {
     @Bean
     ApplicationRunner applicationRunner() {
         return args -> {
-            System.out.println(environment.getProperty("cz.config.key1"));
             System.out.println(Arrays.toString(environment.getActiveProfiles()));
-            System.out.println(configValue);
-            System.out.println(localConfig.getKey1());
+            System.out.println("configValueApp->"+configValueApp);
+            System.out.println("ns-->" + localConfig.getNs());
+            System.out.println("app-->" + localConfig.getApp());
+            System.out.println("env-->" + localConfig.getEnv());
         };
     }
 }

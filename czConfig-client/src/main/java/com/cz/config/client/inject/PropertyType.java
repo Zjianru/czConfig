@@ -1,5 +1,8 @@
 package com.cz.config.client.inject;
 
+import com.cz.config.client.meta.ConfigMeta;
+import com.cz.config.client.reporsitory.ConfigRepo;
+
 /**
  * code desc
  *
@@ -7,7 +10,12 @@ package com.cz.config.client.inject;
  */
 public interface PropertyType {
 
-    String[] getPropertyNames() ;
+    static PropertyType getDefault(ConfigMeta configMeta) {
+        ConfigRepo repo = ConfigRepo.getDefault(configMeta);
+        return new PropertyInject(repo.getConfig());
+    }
 
-    String getProperty(String name) ;
+    String[] getPropertyNames();
+
+    String getProperty(String name);
 }

@@ -4,6 +4,6 @@ spring:
 
 cz:
   config:
-    key1: "init by config yml file , value is key1"
-    key2: "init by config yml file , value is key2"
-    key3: "init by config yml file , value is key3"
+    app: "init by config yml file , app->app"
+    env: "init by config yml file , env-->env"
+    ns: "init by config yml file , ns-->ns"

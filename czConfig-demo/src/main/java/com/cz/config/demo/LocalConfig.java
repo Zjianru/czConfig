@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "cz.config")
 @Data
 public class LocalConfig {
-    String key1;
+    String app;
+    String env;
+    String ns;
 
 }
