@@ -1,4 +1,4 @@
-package com.cz.czconfig;
+package com.cz.config.demo;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

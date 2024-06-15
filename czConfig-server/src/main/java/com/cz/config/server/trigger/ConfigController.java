@@ -1,7 +1,7 @@
 package com.cz.config.server.trigger;
 
 import com.cz.config.server.meta.Configs;
-import com.cz.config.server.repo.ConfigsRepo;
+import com.cz.config.server.repo.ConfigsMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ConfigController {
     @Autowired
-    ConfigsRepo configsRepo;
+    ConfigsMapper configsMapper;
 
     private static final Map<String, Long> VERSION = new ConcurrentHashMap<>();
 
@@ -31,7 +31,7 @@ public class ConfigController {
         log.debug("function [list] param=> app is {} , env is {} , ns is {}", app, env, ns);
         // 添加异常处理
         try {
-            return configsRepo.findByAppAndEnvAndNs(app, env, ns);
+            return configsMapper.findByAppAndEnvAndNs(app, env, ns);
         } catch (Exception e) {
             log.error("Failed to fetch configs", e);
             throw new RuntimeException("Failed to fetch configs", e);
@@ -72,16 +72,16 @@ public class ConfigController {
     private void saveOrUpdateBatch(String app, String env, String ns, List<Configs> configs) {
         List<Configs> needSave = new ArrayList<>();
         configs.forEach(item -> {
-            List<Configs> value = configsRepo.findByAppAndEnvAndNsAndProperties(app, env, ns, item.getProperties());
+            List<Configs> value = configsMapper.findByAppAndEnvAndNsAndProperties(app, env, ns, item.getProperties());
             if (!value.isEmpty()) {
-                int successLineCount = configsRepo.updateConfigsPlaceholder(item.getPlaceholder(), app, env, ns, item.getProperties());
+                int successLineCount = configsMapper.updatePlaceholderByOther(item.getPlaceholder(), app, env, ns, item.getProperties());
                 log.debug("update success ,affected row is {}",successLineCount);
             } else {
                 needSave.add(item);
             }
         });
         if (!needSave.isEmpty()) {
-            configsRepo.saveAll(needSave);
+            configsMapper.batchInsert(needSave);
         }
     }
 

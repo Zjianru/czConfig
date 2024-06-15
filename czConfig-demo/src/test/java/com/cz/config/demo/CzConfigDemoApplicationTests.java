@@ -1,4 +1,4 @@
-package com.cz.czconfig;
+package com.cz.config.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

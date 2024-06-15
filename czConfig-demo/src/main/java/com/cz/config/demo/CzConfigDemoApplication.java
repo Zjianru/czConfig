@@ -1,4 +1,4 @@
-package com.cz.czconfig;
+package com.cz.config.demo;
 
 import com.cz.config.client.annotation.EnableCzConfig;
 import org.springframework.beans.factory.annotation.Autowired;

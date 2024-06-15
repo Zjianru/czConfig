@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cz.config.server.repo.ConfigsMapper">
+  <resultMap id="BaseResultMap" type="com.cz.config.server.meta.Configs">
+    <!--@mbg.generated-->
+    <!--@Table CONFIGS-->
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="APP" jdbcType="VARCHAR" property="app" />
+    <result column="ENV" jdbcType="VARCHAR" property="env" />
+    <result column="NS" jdbcType="VARCHAR" property="ns" />
+    <result column="PROPERTIES" jdbcType="VARCHAR" property="properties" />
+    <result column="PLACEHOLDER" jdbcType="VARCHAR" property="placeholder" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, APP, ENV, NS, PROPERTIES, PLACEHOLDER
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from CONFIGS
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from CONFIGS
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="com.cz.config.server.meta.Configs" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into CONFIGS (APP, ENV, NS, 
+      PROPERTIES, PLACEHOLDER)
+    values (#{app,jdbcType=VARCHAR}, #{env,jdbcType=VARCHAR}, #{ns,jdbcType=VARCHAR}, 
+      #{properties,jdbcType=VARCHAR}, #{placeholder,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="com.cz.config.server.meta.Configs" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into CONFIGS
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="app != null and app != ''">
+        APP,
+      </if>
+      <if test="env != null and env != ''">
+        ENV,
+      </if>
+      <if test="ns != null and ns != ''">
+        NS,
+      </if>
+      <if test="properties != null and properties != ''">
+        PROPERTIES,
+      </if>
+      <if test="placeholder != null and placeholder != ''">
+        PLACEHOLDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="app != null and app != ''">
+        #{app,jdbcType=VARCHAR},
+      </if>
+      <if test="env != null and env != ''">
+        #{env,jdbcType=VARCHAR},
+      </if>
+      <if test="ns != null and ns != ''">
+        #{ns,jdbcType=VARCHAR},
+      </if>
+      <if test="properties != null and properties != ''">
+        #{properties,jdbcType=VARCHAR},
+      </if>
+      <if test="placeholder != null and placeholder != ''">
+        #{placeholder,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cz.config.server.meta.Configs">
+    <!--@mbg.generated-->
+    update CONFIGS
+    <set>
+      <if test="app != null and app != ''">
+        APP = #{app,jdbcType=VARCHAR},
+      </if>
+      <if test="env != null and env != ''">
+        ENV = #{env,jdbcType=VARCHAR},
+      </if>
+      <if test="ns != null and ns != ''">
+        NS = #{ns,jdbcType=VARCHAR},
+      </if>
+      <if test="properties != null and properties != ''">
+        PROPERTIES = #{properties,jdbcType=VARCHAR},
+      </if>
+      <if test="placeholder != null and placeholder != ''">
+        PLACEHOLDER = #{placeholder,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cz.config.server.meta.Configs">
+    <!--@mbg.generated-->
+    update CONFIGS
+    set APP = #{app,jdbcType=VARCHAR},
+      ENV = #{env,jdbcType=VARCHAR},
+      NS = #{ns,jdbcType=VARCHAR},
+      PROPERTIES = #{properties,jdbcType=VARCHAR},
+      PLACEHOLDER = #{placeholder,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update CONFIGS
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="APP = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=INTEGER} then #{item.app,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="ENV = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=INTEGER} then #{item.env,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="NS = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=INTEGER} then #{item.ns,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="PROPERTIES = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=INTEGER} then #{item.properties,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+      <trim prefix="PLACEHOLDER = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=INTEGER} then #{item.placeholder,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where ID in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="ID" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into CONFIGS
+    (APP, ENV, NS, PROPERTIES, PLACEHOLDER)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.app,jdbcType=VARCHAR}, #{item.env,jdbcType=VARCHAR}, #{item.ns,jdbcType=VARCHAR}, 
+        #{item.properties,jdbcType=VARCHAR}, #{item.placeholder,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+<!--auto generated by MybatisCodeHelper on 2024-06-15-->
+  <select id="findByAppAndEnvAndNs" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from CONFIGS
+        where APP=#{app,jdbcType=VARCHAR} and ENV=#{env,jdbcType=VARCHAR} and NS=#{ns,jdbcType=VARCHAR}
+    </select>
+
+<!--auto generated by MybatisCodeHelper on 2024-06-15-->
+  <select id="findByAppAndEnvAndNsAndProperties" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from CONFIGS
+    where APP=#{app,jdbcType=VARCHAR} and ENV=#{env,jdbcType=VARCHAR} and NS=#{ns,jdbcType=VARCHAR} and
+    PROPERTIES=#{properties,jdbcType=VARCHAR}
+  </select>
+
+<!--auto generated by MybatisCodeHelper on 2024-06-15-->
+  <update id="updatePlaceholderByOther">
+    update CONFIGS
+    set PLACEHOLDER=#{updatedPlaceholder,jdbcType=VARCHAR}
+    where APP=#{app,jdbcType=VARCHAR} and ENV=#{env,jdbcType=VARCHAR} and NS=#{ns,jdbcType=VARCHAR} and
+    PROPERTIES=#{properties,jdbcType=VARCHAR}
+  </update>
+</mapper>
