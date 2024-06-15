@@ -10,6 +10,7 @@
     <description>czConfig-client</description>
     <properties>
         <java.version>17</java.version>
+        <cz.config.version>1.0-SNAPSHOT</cz.config.version>
     </properties>
     <dependencies>
         <dependency>
@@ -52,6 +53,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-context</artifactId>
             <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.cz</groupId>
+            <artifactId>czConfig-common</artifactId>
+            <version>${cz.config.version}</version>
         </dependency>
     </dependencies>
 
