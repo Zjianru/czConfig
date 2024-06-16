@@ -64,15 +64,34 @@ public class HttpRepo implements ConfigRepo {
         }
         // 缓存中不存在，需要从远程更新配置。
         System.out.println("[czConfig]---- cache not found --> need update configs ... ");
+        return findAll();
+    }
+
+    /**
+     * 从远程获取所有配置数据并返回为键值对映射。
+     * <p>
+     * 该方法通过发送HTTP GET请求，从指定的URL获取配置数据列表。然后，它遍历这些数据，
+     * 将每个配置项的属性作为键，占位符作为值，存储在HashMap中。最后，返回这个包含所有配置项的映射。
+     *
+     * @return Map<String, String> 包含所有配置项的映射，其中键是配置项的属性，值是配置项的占位符。
+     */
+    private Map<String, String> findAll() {
+        // 通过HTTP GET请求获取远程配置数据列表。
         // 通过HTTP请求获取远程配置数据。
         List<ConfigData> remoteData = HttpUtils.httpGet(configMeta.listPath(), new TypeReference<List<ConfigData>>() {
         });
+
+        // 初始化一个HashMap来存储配置数据。
         // 将获取的配置数据转换为键值对映射。
         Map<String, String> configs = new HashMap<>();
+        // 遍历远程配置数据列表，将每个配置项的属性和占位符添加到configs映射中。
         remoteData.forEach(item -> configs.put(item.getProperties(), item.getPlaceholder()));
+
+        // 返回包含所有配置项的映射。
         // 更新缓存并返回配置。
         return configs;
     }
+
 
     /**
      * 心跳检测方法，用于定时检查配置是否有更新。
@@ -93,7 +112,7 @@ public class HttpRepo implements ConfigRepo {
             // 更新版本号记录。
             versionCompare.put(configKey, newVersion);
             // 更新配置缓存。
-            configDats.put(configKey, getConfig());
+            configDats.put(configKey, findAll());
         }
     }
 }

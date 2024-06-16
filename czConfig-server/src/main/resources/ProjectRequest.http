@@ -1,8 +1,9 @@
-###
+### CONFIG SERVER API
+### list
 GET http://localhost:7001/list?app=app1&env=dev&ns=public
 
 
-###
+### update
 POST http://localhost:7001/update?app=app1&env=dev&ns=public
 Content-Type: application/json
 
@@ -10,3 +11,8 @@ Content-Type: application/json
   "properties": "key1",
   "placeholder": "value1"
 }
+
+### version
+GET http://localhost:7001/version?app=app1&env=dev&ns=public
+
+### CONFIG TEST DEMO API
