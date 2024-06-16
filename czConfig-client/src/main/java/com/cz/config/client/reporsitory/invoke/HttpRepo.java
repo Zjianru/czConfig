@@ -5,35 +5,95 @@ import com.alibaba.fastjson.TypeReference;
 import com.cz.config.client.meta.ConfigMeta;
 import com.cz.config.client.reporsitory.ConfigRepo;
 import com.cz.config.meta.ConfigData;
-import lombok.AllArgsConstructor;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
- * code desc
- *
- * @author Zjianru
+ * 配置仓库的HTTP实现类，用于通过HTTP协议获取和更新配置数据。
  */
-@AllArgsConstructor
 public class HttpRepo implements ConfigRepo {
+
+    /**
+     * 配置元数据，包含配置的标识和访问路径等信息。
+     */
     private ConfigMeta configMeta;
 
+    /**
+     * 定时任务执行器，用于定时心跳检测和更新配置。
+     */
+    ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-//    List<ConfigData> list( String app,  String env,  String ns)
+    /**
+     * 用于记录配置的版本信息，以便于版本比较和更新。
+     */
+    Map<String, Long> versionCompare = new HashMap<>();
 
+    /**
+     * 保存配置数据，以配置标识为键，配置内容为值。
+     */
+    Map<String, Map<String, String>> configDats = new HashMap<>();
+
+    /**
+     * 构造函数，初始化配置仓库。
+     *
+     * @param configMeta 配置元数据，用于初始化配置仓库。
+     */
+    public HttpRepo(ConfigMeta configMeta) {
+        this.configMeta = configMeta;
+        // 初始化定时任务，每5秒执行一次心跳检测。
+        executor.scheduleWithFixedDelay(this::heartBeat, 1000, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * 获取当前配置。
+     *
+     * @return 当前配置的数据映射。
+     */
     @Override
     public Map<String, String> getConfig() {
+        // 生成配置的唯一标识。
+        String configKey = configMeta.generateKey();
+        // 如果缓存中已存在配置，则直接返回。
+        if (configDats.containsKey(configKey)) {
+            return configDats.get(configKey);
+        }
+        // 缓存中不存在，需要从远程更新配置。
+        System.out.println("[czConfig]---- cache not found --> need update configs ... ");
+        // 通过HTTP请求获取远程配置数据。
+        List<ConfigData> remoteData = HttpUtils.httpGet(configMeta.listPath(), new TypeReference<List<ConfigData>>() {
+        });
+        // 将获取的配置数据转换为键值对映射。
         Map<String, String> configs = new HashMap<>();
-        String listPath = configMeta.getServerPath() + "/list";
-        String app = "app=" + configMeta.getApp();
-        String env = "env=" + configMeta.getEnv();
-        String ns = "ns=" + configMeta.getNs();
-
-        String httpPath = listPath + "?" + app + "&" + env + "&" + ns;
-        List<ConfigData> remoteData = HttpUtils.httpGet(httpPath, new TypeReference<List<ConfigData>>() {});
-        remoteData.forEach(item-> configs.put(item.getProperties(), item.getPlaceholder()));
+        remoteData.forEach(item -> configs.put(item.getProperties(), item.getPlaceholder()));
+        // 更新缓存并返回配置。
         return configs;
+    }
+
+    /**
+     * 心跳检测方法，用于定时检查配置是否有更新。
+     */
+    private void heartBeat() {
+        // 通过HTTP请求获取最新的配置版本号。
+        Long newVersion = HttpUtils.httpGet(configMeta.versionPath(), new TypeReference<Long>() {
+        });
+        // 生成配置的唯一标识。
+        String configKey = configMeta.generateKey();
+        // 获取之前记录的配置版本号。
+        Long oldVersion = versionCompare.getOrDefault(configKey, -1L);
+        // 比较新旧版本号，如果版本有更新，则更新配置。
+        if (newVersion > oldVersion) {
+            // 输出版本更新信息。
+            System.out.println("[czConfig]---- new version is " + newVersion + ".. old version is " + oldVersion);
+            System.out.println("[czConfig]---- version change--> need update configs ... ");
+            // 更新版本号记录。
+            versionCompare.put(configKey, newVersion);
+            // 更新配置缓存。
+            configDats.put(configKey, getConfig());
+        }
     }
 }
