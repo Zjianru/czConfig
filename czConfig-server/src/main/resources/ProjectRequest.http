@@ -3,16 +3,25 @@
 GET http://localhost:7001/list?app=app1&env=dev&ns=public
 
 
-### update
+### update-update
 POST http://localhost:7001/update?app=app1&env=dev&ns=public
 Content-Type: application/json
 
 {
-  "properties": "key1",
-  "placeholder": "value1"
+  "cz.config.ns": "9999999999999999999999"
+}
+
+### update-add
+POST http://localhost:7001/update?app=app1&env=dev&ns=public
+Content-Type: application/json
+
+{
+  "cz.config.ns2": "ns222"
 }
 
 ### version
 GET http://localhost:7001/version?app=app1&env=dev&ns=public
 
 ### CONFIG TEST DEMO API
+
+GET http://localhost:8080/hello

@@ -4,8 +4,11 @@ import cn.kimmking.utils.HttpUtils;
 import com.alibaba.fastjson.TypeReference;
 import com.cz.config.client.meta.ConfigMeta;
 import com.cz.config.client.reporsitory.ConfigRepo;
+import com.cz.config.client.reporsitory.RepoChangeListener;
 import com.cz.config.meta.ConfigData;
+import org.springframework.context.ApplicationContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,15 +41,22 @@ public class HttpRepo implements ConfigRepo {
      */
     Map<String, Map<String, String>> configDats = new HashMap<>();
 
+    List<RepoChangeListener> changeListeners = new ArrayList<>();
     /**
      * 构造函数，初始化配置仓库。
      *
      * @param configMeta 配置元数据，用于初始化配置仓库。
+     * @param applicationContext
      */
-    public HttpRepo(ConfigMeta configMeta) {
+    public HttpRepo(ApplicationContext applicationContext,ConfigMeta configMeta) {
         this.configMeta = configMeta;
         // 初始化定时任务，每5秒执行一次心跳检测。
         executor.scheduleWithFixedDelay(this::heartBeat, 1000, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public void addListener(RepoChangeListener listener) {
+        changeListeners.add(listener);
     }
 
     /**
@@ -86,7 +96,6 @@ public class HttpRepo implements ConfigRepo {
         Map<String, String> configs = new HashMap<>();
         // 遍历远程配置数据列表，将每个配置项的属性和占位符添加到configs映射中。
         remoteData.forEach(item -> configs.put(item.getProperties(), item.getPlaceholder()));
-
         // 返回包含所有配置项的映射。
         // 更新缓存并返回配置。
         return configs;
@@ -111,8 +120,13 @@ public class HttpRepo implements ConfigRepo {
             System.out.println("[czConfig]---- version change--> need update configs ... ");
             // 更新版本号记录。
             versionCompare.put(configKey, newVersion);
+            Map<String, String> all = findAll();
             // 更新配置缓存。
-            configDats.put(configKey, findAll());
+            configDats.put(configKey, all);
+            System.out.println("[czConfig]---- fire environment change event ... ");
+            // 修改源并通知 spring 发布修改事件
+            changeListeners.forEach(listener -> listener.onChange(new RepoChangeListener.ChangeEvent(configMeta, all)));
+
         }
     }
 }

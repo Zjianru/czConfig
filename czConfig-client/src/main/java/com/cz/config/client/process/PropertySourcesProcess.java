@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
@@ -22,13 +24,14 @@ import org.springframework.core.env.Environment;
  * @author Zjianru
  */
 @Setter
-public class PropertySourcesProcess implements BeanFactoryPostProcessor, PriorityOrdered, EnvironmentAware {
+public class PropertySourcesProcess implements BeanFactoryPostProcessor, PriorityOrdered, EnvironmentAware, ApplicationContextAware {
 
     private final static String CZ_CONFIGS_PREFIX = "cz";
     private final static String CZ_CONFIG_PREFIX = "config";
     private final static String CONFIGS_PREFIX = CZ_CONFIGS_PREFIX + "." + CZ_CONFIG_PREFIX;
 
     Environment environment;
+    ApplicationContext applicationContext;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -39,7 +42,7 @@ public class PropertySourcesProcess implements BeanFactoryPostProcessor, Priorit
         }
 
         ConfigMeta configs = transferConfigMeta(configurableEnvironment);
-        PropertyType propertyType = PropertyType.getDefault(configs);
+        PropertyType propertyType = PropertyType.getDefault(applicationContext,configs);
         CzConfigPropertySource czConfigPropertySource = new CzConfigPropertySource(CZ_CONFIG_PREFIX, propertyType);
         // start inject to environment
         CompositePropertySource composite = new CompositePropertySource(CZ_CONFIGS_PREFIX);

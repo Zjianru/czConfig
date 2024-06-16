@@ -15,5 +15,4 @@ public class LocalConfig {
     String app;
     String env;
     String ns;
-
 }
