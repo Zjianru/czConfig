@@ -46,7 +46,7 @@ public class HttpRepo implements ConfigRepo {
      * 构造函数，初始化配置仓库。
      *
      * @param configMeta 配置元数据，用于初始化配置仓库。
-     * @param applicationContext
+     * @param applicationContext Spring应用上下文，用于获取配置数据。
      */
     public HttpRepo(ApplicationContext applicationContext,ConfigMeta configMeta) {
         this.configMeta = configMeta;
@@ -126,7 +126,6 @@ public class HttpRepo implements ConfigRepo {
             System.out.println("[czConfig]---- fire environment change event ... ");
             // 修改源并通知 spring 发布修改事件
             changeListeners.forEach(listener -> listener.onChange(new RepoChangeListener.ChangeEvent(configMeta, all)));
-
         }
     }
 }

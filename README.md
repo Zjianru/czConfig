@@ -35,3 +35,10 @@ springboot 里存在两种配置的绑定方式
 注解中 import 了启动逻辑 `BeanRegistrar` , 实现 `ImportBeanDefinitionRegistrar` 接口,注入 `PropertySourcesProcess` 处理器进行逻辑处理
 
 `PropertySourcesProcess` 负责获取配置中心配置并将配置打包为 `CompositePropertySource` 注入进 `ConfigurableEnvironment` 中
+
+#### 主动替换配置
+1. 定时任务线程轮询,版本号变更时发送刷新事件,交由 spring 完成配置刷新
+
+相关实现代码 `com.cz.config.client.reporsitory.invoke.HttpRepo#heartBeat`
+
+2. spring value 方式需要额外进行反射处理
