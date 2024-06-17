@@ -41,4 +41,11 @@ springboot 里存在两种配置的绑定方式
 
 相关实现代码 `com.cz.config.client.reporsitory.invoke.HttpRepo#heartBeat`
 
-2. spring value 方式需要额外进行反射处理
+2. spring value 方式
+   需要额外进行处理,大致步骤:
+   1. 扫描所有的 springvalue 注解 保存起来
+   2. 监听配置中心
+   3. 配置中心有变化，更新springvalue
+扫描 - 可在 bean 初始化阶段使用 BeanPostProcessor 完成扫描
+监听变化 - 两种方式 @EventListener 注解 或实现 ApplicationListener 接口的 onApplicationEvent 方法
+applicationListener 的 spring 示例, 可参考`org.springframework.cloud.context.properties.ConfigurationPropertiesRebinder`
