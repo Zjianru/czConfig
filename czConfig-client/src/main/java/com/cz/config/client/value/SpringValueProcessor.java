@@ -77,10 +77,11 @@ public class SpringValueProcessor implements BeanPostProcessor, BeanFactoryAware
      */
     @Override
     public void onApplicationEvent(EnvironmentChangeEvent event) {
+        log.debug("environment change event keys is --> {}", event.getKeys());
         // 遍历所有发生变化的键
         event.getKeys().forEach(key -> {
             // 记录环境变化的键，用于调试和日志记录
-            log.info("environment change event key:{}", key);
+            log.info("[ in for loop ] -- environment change event key:{}", key);
             // 尝试获取与当前键相关的Spring值列表
             List<SpringValue> springValues = VALUE_HOLDER.get(key);
             // 如果列表为空或不存在，则跳过当前键的处理
