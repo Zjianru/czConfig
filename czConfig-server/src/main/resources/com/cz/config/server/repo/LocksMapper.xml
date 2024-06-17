@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cz.config.server.repo.LocksMapper">
+  <resultMap id="BaseResultMap" type="com.cz.config.server.meta.Locks">
+    <!--@mbg.generated-->
+    <!--@Table locks-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="app" jdbcType="VARCHAR" property="app" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, app
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from locks
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from locks
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cz.config.server.meta.Locks">
+    <!--@mbg.generated-->
+    insert into locks (id, app)
+    values (#{id,jdbcType=INTEGER}, #{app,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cz.config.server.meta.Locks">
+    <!--@mbg.generated-->
+    insert into locks
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="app != null and app != ''">
+        app,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="app != null and app != ''">
+        #{app,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cz.config.server.meta.Locks">
+    <!--@mbg.generated-->
+    update locks
+    <set>
+      <if test="app != null and app != ''">
+        app = #{app,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cz.config.server.meta.Locks">
+    <!--@mbg.generated-->
+    update locks
+    set app = #{app,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update locks
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="app = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=INTEGER} then #{item.app,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+  </update>
+  <insert id="batchInsert" parameterType="map">
+    <!--@mbg.generated-->
+    insert into locks
+    (id, app)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.app,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+</mapper>

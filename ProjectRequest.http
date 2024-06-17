@@ -22,6 +22,20 @@ Content-Type: application/json
 ### version
 GET http://localhost:7001/version?app=app1&env=dev&ns=public
 
+
+### get master status for 7001
+GET http://localhost:7001/checkMaster
+
+### get master status for 7002
+GET http://localhost:7002/checkMaster
+
+### get master status for 7003
+GET http://localhost:7003/checkMaster
+
+
+
 ### CONFIG TEST DEMO API
 
 GET http://localhost:8080/hello
+
+

@@ -1,11 +1,12 @@
 package com.cz.config.server.trigger;
 
 import com.cz.config.meta.ConfigData;
+import com.cz.config.server.lock.DistributedLocks;
 import com.cz.config.server.meta.Configs;
 import com.cz.config.server.repo.ConfigsMapper;
+import com.cz.config.server.util.TriggerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class ConfigController {
     private static final Map<String, Long> VERSION = new ConcurrentHashMap<>();
 
     @Autowired
-    private DataSourceTransactionManager transactionManager;
+    private DistributedLocks locks;
 
     /**
      * 根据应用名、环境和命名空间获取配置列表。
@@ -45,7 +46,7 @@ public class ConfigController {
         log.debug("function [list] param=> app is {} , env is {} , ns is {}", app, env, ns);
         // 添加异常处理
         try {
-            return transferToConfig(configsMapper.findByAppAndEnvAndNs(app, env, ns));
+            return TriggerUtils.transferToConfig(configsMapper.findByAppAndEnvAndNs(app, env, ns));
         } catch (Exception e) {
             log.error("Failed to fetch configs", e);
             throw new RuntimeException("Failed to fetch configs", e);
@@ -72,7 +73,7 @@ public class ConfigController {
             throw new IllegalArgumentException("Invalid key detected");
         }
 
-        List<Configs> configs = transferParamToConfig(app, env, ns, param);
+        List<Configs> configs = TriggerUtils.transferParamToConfig(app, env, ns, param);
 
         // 日志输出和业务逻辑分离
         log.debug("start modify config data ...");
@@ -81,7 +82,7 @@ public class ConfigController {
         log.debug("start modify version data ...");
         VERSION.put(app + env + ns, System.currentTimeMillis());
 
-        return transferToConfig(configs);
+        return TriggerUtils.transferToConfig(configs);
     }
 
     /**
@@ -106,51 +107,17 @@ public class ConfigController {
         }
     }
 
-    /**
-     * 将参数映射转换为Configs对象列表。
-     *
-     * @param app   应用名
-     * @param env   环境
-     * @param ns    命名空间
-     * @param param 参数映射
-     * @return Configs对象列表
-     */
-    private List<Configs> transferParamToConfig(String app, String env, String ns, Map<String, String> param) {
-        List<Configs> configs = new ArrayList<>();
-        param.forEach((k, v) -> {
-            Configs build = Configs.builder()
-                    .properties(k)
-                    .placeholder(v)
-                    .ns(ns)
-                    .app(app)
-                    .env(env)
-                    .build();
-            configs.add(build);
-        });
-        return configs;
-    }
 
     /**
-     * 将Configs对象列表转换为ConfigData对象列表。
+     * 检查当前节点是否为主节点。
      *
-     * @param configs Configs对象列表
-     * @return ConfigData对象列表
+     * @return boolean
      */
-    private List<ConfigData> transferToConfig(List<Configs> configs) {
-        List<ConfigData> result = new ArrayList<>();
-        configs.forEach(item -> {
-            ConfigData configData = ConfigData.builder()
-                    .app(item.getApp())
-                    .env(item.getEnv())
-                    .ns(item.getNs())
-                    .properties(item.getProperties())
-                    .placeholder(item.getPlaceholder())
-                    .id(item.getId())
-                    .build();
-            result.add(configData);
-        });
-        return result;
+    @RequestMapping(value = "/checkMaster", method = RequestMethod.GET)
+    public boolean checkIsMaster() {
+        return locks.getLocked().get();
     }
+
 
     /**
      * 批量保存或更新配置项。
@@ -175,4 +142,6 @@ public class ConfigController {
             configsMapper.batchInsert(needSave);
         }
     }
+
+
 }

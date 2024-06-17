@@ -4,27 +4,14 @@ spring:
   application:
     name: cz-config-server
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:configServer
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/configServer?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      mode: always
-
-  h2:
-    console:
-      settings:
-        web-allow-others: true
-      enabled: true
-      path: /h2-console
-
 logging:
   level:
     root: info
     org.springframework: info
-
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

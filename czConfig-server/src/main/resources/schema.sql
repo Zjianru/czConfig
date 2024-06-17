@@ -10,3 +10,9 @@ create table if not exists configs (
 insert into configs (app,env,ns,properties,placeholder)values ('app1', 'dev', 'public', 'cz.config.ns', 'db-init-ns1');
 insert into configs (app,env,ns,properties,placeholder)values ('app1', 'dev', 'public', 'cz.config.app', 'db-init-server');
 insert into configs (app,env,ns,properties,placeholder)values ('app1', 'dev', 'public', 'cz.config.env', 'db-init-dev');
+
+
+create table if not exists locks (
+    id int primary key not null,
+    app varchar(64) not null
+);
