@@ -29,6 +29,7 @@ springboot 里存在两种配置的绑定方式
 - [x] 配置中心化存储
 - [X] 配置变更时推送配置，覆盖 `@Value` 注解与 `@ConfigurationProperties` 注解
 - [X] 配置中心集群化，可完成主节点选举并给到客户端反馈
+- [ ] 当前配置变更存在平均 2.5s 的延迟，可使用 deferredResult 进行优化
 
 ## 配置中心替换配置原理
 ![img.png](noteImg/img.png)
